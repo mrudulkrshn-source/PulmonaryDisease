@@ -5,6 +5,7 @@ import math
 from flask import *
 import numpy as np
 import pymysql
+import psycopg2
 import os
 import tensorflow as tf
 from werkzeug.utils import secure_filename
@@ -13,7 +14,7 @@ app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "static/uploads"  # Folder path
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)  # Create folder if not exists
 
-con = pymysql.connect(host='localhost',user='root',password='root',db='smart_health',charset='utf8')
+con = psycopg2.connect(host='localhost',user='root',password='root',db='smart_health')
 cmd = con.cursor()
 @app.route("/userregister", methods=['POST'])
 def userregister():
