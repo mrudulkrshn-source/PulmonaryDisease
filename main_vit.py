@@ -4,7 +4,6 @@ import math
 
 from flask import *
 import numpy as np
-import pymysql
 import psycopg2
 import os
 import tensorflow as tf
