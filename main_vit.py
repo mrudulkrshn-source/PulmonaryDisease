@@ -443,10 +443,10 @@ def history():
 # ---------------------------------------------------------------------------
 
 from flask import Flask, request, jsonify
-import tensorflow as tf
+# import tensorflow as tf
 import numpy as np
-from tensorflow.keras.preprocessing import image
-from transformers import TFViTModel
+# from tensorflow.keras.preprocessing import image
+# from transformers import TFViTModel
 import os
 
 UPLOAD_FOLDER = "uploads"
@@ -455,13 +455,13 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # =========================
 # LOAD MODEL (LOAD ONCE)
 # =========================
-from transformers import TFViTModel
+# from transformers import TFViTModel
 
-model = tf.keras.models.load_model(
-    "lung_vit_model_full.keras",
-    compile=False,
-    custom_objects={"TFViTModel": TFViTModel}
-)
+# model = tf.keras.models.load_model(
+#     "lung_vit_model_full.keras",
+#     compile=False,
+#     custom_objects={"TFViTModel": TFViTModel}
+# )
 
 print("Model Loaded Successfully")
 
@@ -479,58 +479,58 @@ class_names = [
 # =========================
 # PREDICTION API
 # =========================
-@app.route("/predict_vit/<int:lid>", methods=["POST"])
-def predict_vit(lid):
-    print("PREDICTION API HIT-------------------")
+# @app.route("/predict_vit/<int:lid>", methods=["POST"])
+# def predict_vit(lid):
+#     print("PREDICTION API HIT-------------------")
 
-    try:
+#     try:
 
-        if "file" not in request.files:
-            return jsonify({"error": "No file uploaded"}), 400
+#         if "file" not in request.files:
+#             return jsonify({"error": "No file uploaded"}), 400
 
-        file = request.files["file"]
+#         file = request.files["file"]
 
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+#         filename = secure_filename(file.filename)
+#         filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
 
-        file.save(filepath)
+#         file.save(filepath)
 
-        # Image preprocess
-        img = image.load_img(filepath, target_size=(224,224))
-        img_array = image.img_to_array(img)
+#         # Image preprocess
+#         img = image.load_img(filepath, target_size=(224,224))
+#         img_array = image.img_to_array(img)
 
-        img_array = img_array / 255.0
-        img_array = np.expand_dims(img_array, axis=0)
+#         img_array = img_array / 255.0
+#         img_array = np.expand_dims(img_array, axis=0)
 
-        # Prediction
-        prediction = model.predict(img_array)
+#         # Prediction
+#         prediction = model.predict(img_array)
 
-        predicted_class = class_names[np.argmax(prediction)]
-        confidence = float(np.max(prediction) * 100)
+#         predicted_class = class_names[np.argmax(prediction)]
+#         confidence = float(np.max(prediction) * 100)
 
-        # Save result to DB
-        db = get_db()
-        cursor = db.cursor()
+#         # Save result to DB
+#         db = get_db()
+#         cursor = db.cursor()
 
-        cursor.execute("""
-        INSERT INTO xray_results (image_name, predicted_class, confidence, lid)
-        VALUES (%s,%s,%s,%s)
-        """, (filename, predicted_class, confidence, lid))
+#         cursor.execute("""
+#         INSERT INTO xray_results (image_name, predicted_class, confidence, lid)
+#         VALUES (%s,%s,%s,%s)
+#         """, (filename, predicted_class, confidence, lid))
 
-        db.commit()
-        cursor.close()
-        db.close()
-        print("-------class------>", predicted_class, confidence)
+#         db.commit()
+#         cursor.close()
+#         db.close()
+#         print("-------class------>", predicted_class, confidence)
 
-        return jsonify({
-            "prediction": predicted_class,
-            "confidence": f"{confidence:.2f}%",
-            "image": filename,
-            "lid": lid
-        })
+#         return jsonify({
+#             "prediction": predicted_class,
+#             "confidence": f"{confidence:.2f}%",
+#             "image": filename,
+#             "lid": lid
+#         })
 
-    except Exception as e:
-        return jsonify({"error": str(e)})
+#     except Exception as e:
+#         return jsonify({"error": str(e)})
     
 
 # =========================
