@@ -25,7 +25,7 @@ Features
 
 Prerequisites
 -------------
-- Python 3.8+
+- Python 3.9.10
 - MySQL Server (running locally)
 - pip package manager
 
