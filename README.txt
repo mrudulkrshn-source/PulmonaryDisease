@@ -65,3 +65,73 @@ Supported Diseases for X-ray Classification:
 - Normal
 - Tuberculosis
 - Viral Pneumonia
+
+
+-- CREATE DATABASE
+CREATE DATABASE smart_health;
+
+-- USE DATABASE
+\c smart_health;
+
+-- =========================================
+-- LOGIN TABLE
+-- =========================================
+CREATE TABLE login (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    usertype VARCHAR(50) NOT NULL
+);
+
+-- =========================================
+-- PATIENT TABLE
+-- =========================================
+CREATE TABLE patient_table (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    phone VARCHAR(20),
+    dob DATE,
+    email VARCHAR(100),
+    loginid INTEGER REFERENCES login(id) ON DELETE CASCADE
+);
+
+-- =========================================
+-- HEALTH DATA TABLE
+-- =========================================
+CREATE TABLE health_data (
+    id SERIAL PRIMARY KEY,
+
+    IR FLOAT,
+    HeartRate FLOAT,
+    SpO2 FLOAT,
+    TempC FLOAT,
+    TempF FLOAT,
+    GSR FLOAT,
+
+    LSM_AccX FLOAT,
+    LSM_AccY FLOAT,
+    LSM_AccZ FLOAT,
+
+    HR_Status VARCHAR(50),
+    SpO2_Status VARCHAR(50),
+    Temp_Status VARCHAR(50),
+    Stress_Level VARCHAR(50),
+    Movement_Status VARCHAR(50),
+
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =========================================
+-- XRAY RESULTS TABLE
+-- =========================================
+CREATE TABLE xray_results (
+    id SERIAL PRIMARY KEY,
+
+    image_name VARCHAR(255),
+    predicted_class VARCHAR(100),
+    confidence FLOAT,
+
+    lid INTEGER REFERENCES login(id) ON DELETE CASCADE,
+
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
